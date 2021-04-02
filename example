@@ -1,0 +1,59 @@
+Date and hour separate dual input select datepicker and datetimepicker Jquery
+//NEED: JQUERY, DATEPICKER,DATETIMPICKER,MOMENTJS
+
+jqBsdatepicker('#elementDateDDMMYYY', {
+            todayHighlight: true,
+            startDate: '-60d',
+            endDate: '0d'
+        });
+        jqBsdatetimepicker('#elementHour', {
+            ignoreReadonly: true,
+            format: 'HH:mm',
+            maxDate: new Date(moment.now())
+        });
+
+$('#elementDateDDMMYYY').change(function (e) {
+        var jsDate = this.value;
+        var elementHour = $('#elementHour').val();
+        if (elementHour !== "" && jsDate !== "") {
+            jsDate = jsDate.split('/');
+            var jsDateInvert = jsDate[2] + "-" + jsDate[1] + "-" + jsDate[0];
+            var horaIngreso = $('#elementHour').data('DateTimePicker').date().format('YYYY-MM-DD');
+            if (compareDates(jsDateInvert, elementHour) == "I") {
+                $('#elementHour').data("DateTimePicker").maxDate(new Date(moment.now()));
+            } else {
+                $('#elementHour').data("DateTimePicker").maxDate(moment(e.date).endOf('day'));
+            }
+        }
+    });
+
+
+    $('#elementHour').on('dp.change', function (e) {
+        var elementHour = this.value;
+        if (elementHour !== "") {
+            var diaHour = e.date._d.getDate();
+            var mesHour = e.date._d.getMonth() + 1;
+            var agnoHour = e.date._d.getFullYear();
+            var object2 = agnoHour + "-" + mesHour + "-" + diaHour;
+            var elementHour = $(this).data('DateTimePicker').date().format('YYYY-MM-DD');
+            var jsDate = $('#elementDateDDMMYYY').val();
+            jsDate = jsDate.split('/');
+            var jsDateInvertido = jsDate[2] + "-" + jsDate[1] + "-" + jsDate[0];
+
+            $('#elementDateDDMMYYY').val($(this).data('DateTimePicker').date().format('DD/MM/YYYY'));
+        }
+
+    });
+
+     function compareDates(g1, g2) {
+        var g1 = new Date(g1);
+        var g2 = new Date(g2);
+
+        if (g1.getTime() === g2.getTime())
+            return "I";
+        else
+        if (g1.getTime() > g2.getTime())
+            return "M";
+        else
+            return false;
+    }
